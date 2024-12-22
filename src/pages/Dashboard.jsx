@@ -1,28 +1,70 @@
 import React, { useState, useEffect } from "react";
-import { Button, Typography } from "@mui/material";
+import {
+  Button,
+  Typography,
+  Box,
+  Grid,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import CustomModal from "../helper/CustomModal";
+
+// DataList component for listing saved data
+const DataList = ({ savedData, filter }) => {
+  return (
+    <Box sx={{ mt: 2 }}>
+      {savedData
+        ?.filter(({ value }) => (filter ? value.propertyType === filter : true))
+        .map(({ key, value }) => {
+          const {
+            inputData,
+            sizeData,
+            priceData,
+            propertyType,
+            propertyType2,
+          } = value;
+          const name = inputData || "N/A";
+
+          return (
+            <Typography key={key} variant="body1" sx={{ mt: 1 }}>
+              <strong>Name:</strong> {name} <br />
+              <strong>Size:</strong> {sizeData || "N/A"} <br />
+              <strong>Price:</strong> {priceData || "N/A"} <br />
+              <strong>Property Type:</strong> {propertyType || "N/A"} <br />
+              <strong>Rent Type:</strong> {propertyType2 || "N/A"} <br />
+            </Typography>
+          );
+        })}
+    </Box>
+  );
+};
 
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
-  const [savedData, setSavedData] = useState([]); // State to store multiple data entries
-  const [modalKey, setModalKey] = useState(""); // Store key for each data entry
+  const [savedData, setSavedData] = useState([]);
+  const [modalKey, setModalKey] = useState("");
+  const [filter, setFilter] = useState("");
 
-  // Load all saved data from localStorage on mount
   useEffect(() => {
-    const keys = Object.keys(localStorage); // Get all keys from localStorage
-    const data = keys.map((key) => {
-      const item = localStorage.getItem(key);
-      return {
-        key,
-        value: item ? JSON.parse(item) : {}, // Parse stored object
-      };
-    });
-    setSavedData(data);
+    const loadSavedData = () => {
+      const keys = Object.keys(localStorage);
+      const data = keys.map((key) => {
+        const item = localStorage.getItem(key);
+        return {
+          key,
+          value: item ? JSON.parse(item) : {},
+        };
+      });
+      setSavedData(data);
+    };
+    loadSavedData();
   }, []);
 
   const handleOpen = () => {
     const newKey = `data-${Date.now()}`;
-    setModalKey(newKey); // Set the key for the modal when opened
+    setModalKey(newKey);
     setOpen(true);
   };
 
@@ -43,79 +85,90 @@ export default function Dashboard() {
       propertyType,
       propertyType2,
     };
-
-    // Save new data to localStorage
     localStorage.setItem(key, JSON.stringify(updatedData));
-
-    // Update the list by adding new entry or updating existing one
     setSavedData((prevData) => {
       const existingIndex = prevData.findIndex((item) => item.key === key);
       if (existingIndex !== -1) {
-        // Update if key exists
         const updatedList = [...prevData];
         updatedList[existingIndex].value = updatedData;
         return updatedList;
       }
-      // Add new entry if key does not exist
       return [...prevData, { key, value: updatedData }];
     });
+    setModalKey("");
+    setOpen(false);
+  };
 
-    setModalKey(""); // Reset modal key
-    setOpen(false); // Close the modal
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
   };
 
   return (
-    <div style={{ padding: "2%" }}>
-      <Button variant="contained" onClick={handleOpen}>
-        Open Modal for New Data
-      </Button>
-      return (
-      <div style={{ padding: "2%" }}>
-        <Button variant="contained" onClick={handleOpen}>
-          Open Modal for New Data
-        </Button>
+    <Grid container spacing={2} sx={{ padding: 2 }}>
+      {/* Empty space to push the right side */}
+      <Grid item xs={12} md={8}>
+        <h1>hellow.</h1>
+      </Grid>
 
-        {savedData.filter.include("Apartment")(({ key, value }) => {
-          const {
-            inputData,
-            sizeData,
-            priceData,
-            propertyType,
-            propertyType2,
-          } = value;
-          const name = inputData || "N/A";
+      {/* Right side - box aligned to the far right */}
+      <Grid
+        item
+        xs={12}
+        md={4}
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: "400px",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: "450px",
+            overflowY: "auto",
+            border: "1px solid #ddd",
+            borderRadius: 3,
+            padding: 3,
+            backgroundColor: "#f9f9f9",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Filter by Property Type</InputLabel>
+            <Select
+              value={filter}
+              label="Filter by Property Type"
+              onChange={handleFilterChange}
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="Apartment">Apartment</MenuItem>
+              <MenuItem value="House">House</MenuItem>
+              <MenuItem value="Commercial">Commercial</MenuItem>
+            </Select>
+          </FormControl>
 
-          return (
-            <Typography key={key} variant="body1" sx={{ mt: 1 }}>
-              <strong>Name:</strong> {name} <br />
-              <strong>Size:</strong> {sizeData || "N/A"} <br />
-              <strong>Price:</strong> {priceData || "N/A"} <br />
-              <strong>Property Type:</strong> {propertyType || "N/A"} <br />
-              <strong>Rent Type:</strong> {propertyType2 || "N/A"} <br />
-            </Typography>
-          );
-        })}
+          <Button
+            variant="contained"
+            onClick={handleOpen}
+            sx={{
+              alignSelf: "flex-end",
+            }}
+          >
+            Open Modal for New Data
+          </Button>
+
+          <DataList savedData={savedData} filter={filter} />
+        </Box>
 
         <CustomModal
           open={open}
           handleClose={handleClose}
-          onDataUpdate={handleDataUpdate}
-          title="Add your details."
-          content="This is a sample modal using Material UI."
-          key={modalKey}
+          handleDataUpdate={handleDataUpdate}
           modalKey={modalKey}
         />
-      </div>
-      );
-      <CustomModal
-        open={open}
-        handleClose={handleClose}
-        onDataUpdate={handleDataUpdate}
-        title="Add your details."
-        content="This is a sample modal using Material UI."
-        key={modalKey}
-        modalKey={modalKey}
-      />
-    </div>
+      </Grid>
+    </Grid>
   );
 }
