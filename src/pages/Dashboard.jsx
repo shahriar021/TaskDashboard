@@ -10,11 +10,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import CustomModal from "../helper/CustomModal";
-import {
-  
-  AttachMoney,
-  CropDin,
-} from "@mui/icons-material";
+import { AttachMoney, CropDin } from "@mui/icons-material";
 import { PieChart } from "@mui/x-charts/PieChart";
 //import { Card, CardContent } from "@mui/material";
 
@@ -196,10 +192,11 @@ export default function Dashboard() {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          padding: 3,
+          padding: 2,
           backgroundColor: "#f5f5f5",
           borderRadius: 2,
           boxShadow: 1,
+          margin: "0 2% 0 2%",
         }}
       >
         {[
@@ -225,6 +222,14 @@ export default function Dashboard() {
               {item.label}
             </Typography>
             <Typography variant="h6">{item.value}</Typography>
+            <Box
+              sx={{
+                height: 4,
+                background:
+                  "linear-gradient(to right, #FF5733, #33FF57, #3357FF)",
+                mt: 0.5,
+              }}
+            />
           </Box>
         ))}
       </Box>
@@ -271,6 +276,7 @@ export default function Dashboard() {
           sx={{
             display: "flex",
             justifyContent: "flex-end",
+            padding: 3,
           }}
         >
           <Box
