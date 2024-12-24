@@ -11,15 +11,12 @@ import {
 } from "@mui/material";
 import CustomModal from "../helper/CustomModal";
 import {
-  LocalOffer,
-  AccountBox,
-  Home,
-  Apartment,
+  
   AttachMoney,
   CropDin,
 } from "@mui/icons-material";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { Card, CardContent } from "@mui/material";
+//import { Card, CardContent } from "@mui/material";
 
 // DataList component for listing saved data
 const DataList = ({ savedData, filter }) => {
@@ -190,7 +187,7 @@ export default function Dashboard() {
   );
 
   const activeCount = savedData.reduce((count, { value }) => {
-    return value.propertyType2 == "Available" ? count + 1 : count;
+    return value.propertyType2 === "Available" ? count + 1 : count;
   }, 0);
 
   return (
