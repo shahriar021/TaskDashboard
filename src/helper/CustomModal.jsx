@@ -14,11 +14,14 @@ const CustomModal = ({ open, handleClose, onDataUpdate, modalKey }) => {
   const [inputData, setInputData] = useState("");
   const [sizeData, setSize] = useState("");
   const [priceData, setPrice] = useState("");
+  const [LocationData, setLocation] = useState("");
+  const [ContactData, setContact] = useState("");
   const [propertyType, setPropertyType] = useState("");
   const [propertyType2, setPropertyType2] = useState("");
+  const [checkInDate, setCheckInDate] = useState("");
+  const [checkOutDate, setCheckOutDate] = useState("");
   const [activeGroup, setActiveGroup] = useState(null);
 
-  // Load existing data from localStorage when the modal is opened
   useEffect(() => {
     if (modalKey) {
       const existingData = localStorage.getItem(modalKey);
@@ -27,14 +30,22 @@ const CustomModal = ({ open, handleClose, onDataUpdate, modalKey }) => {
         setInputData(parsedData.inputData || "");
         setSize(parsedData.sizeData || "");
         setPrice(parsedData.priceData || "");
+        setLocation(parsedData.LocationData || "");
+        setContact(parsedData.ContactData || "");
         setPropertyType(parsedData.propertyType || "");
         setPropertyType2(parsedData.propertyType2 || "");
+        setCheckInDate(parsedData.checkInDate || "");
+        setCheckOutDate(parsedData.checkOutDate || "");
       } else {
         setInputData("");
         setSize("");
         setPrice("");
+        setLocation("");
+        setContact("");
         setPropertyType("");
         setPropertyType2("");
+        setCheckInDate("");
+        setCheckOutDate("");
       }
     }
   }, [modalKey]);
@@ -44,18 +55,36 @@ const CustomModal = ({ open, handleClose, onDataUpdate, modalKey }) => {
       inputData,
       sizeData,
       priceData,
+      LocationData,
+      ContactData,
       propertyType,
       propertyType2,
+      checkInDate,
+      checkOutDate,
     };
+    if (
+      (modalKey && LocationData.trim() === "") ||
+      ContactData.trim() === "" ||
+      propertyType.trim() === ""
+    ) {
+      alert("Fill up required fields");
+      return;
+    }
     localStorage.setItem(modalKey, JSON.stringify(dataToSave));
+
     onDataUpdate(
       inputData,
       sizeData,
       priceData,
+      LocationData,
+      ContactData,
       propertyType,
       propertyType2,
+      checkInDate,
+      checkOutDate,
       modalKey
     );
+
     handleClose();
   };
 
@@ -82,6 +111,8 @@ const CustomModal = ({ open, handleClose, onDataUpdate, modalKey }) => {
           boxShadow: 24,
           p: 4,
           borderRadius: 2,
+          maxHeight: "90vh",
+          overflowY: "auto",
         }}
       >
         <Typography variant="h6">Add your details</Typography>
@@ -114,8 +145,59 @@ const CustomModal = ({ open, handleClose, onDataUpdate, modalKey }) => {
           onChange={(e) => setPrice(e.target.value)}
         />
 
+        <TextField
+          label="Check-in Date"
+          fullWidth
+          type="date"
+          variant="outlined"
+          sx={{ mt: 2 }}
+          InputLabelProps={{ shrink: true }}
+          value={checkInDate}
+          onChange={(e) => setCheckInDate(e.target.value)}
+        />
+
+        <TextField
+          label="Check-out Date"
+          fullWidth
+          type="date"
+          variant="outlined"
+          sx={{ mt: 2 }}
+          InputLabelProps={{ shrink: true }}
+          value={checkOutDate}
+          onChange={(e) => setCheckOutDate(e.target.value)}
+        />
+
+        <TextField
+          label="Enter Location"
+          fullWidth
+          variant="outlined"
+          sx={{ mt: 2 }}
+          value={LocationData}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <Typography sx={{ color: "red", fontSize: 10 }}>
+          *required fields
+        </Typography>
+
+        <TextField
+          label="Enter Contact"
+          fullWidth
+          variant="outlined"
+          sx={{ mt: 2 }}
+          value={ContactData}
+          onChange={(e) => setContact(e.target.value)}
+        />
+        <Typography sx={{ color: "red", fontSize: 10 }}>
+          *required fields
+        </Typography>
+
         {activeGroup !== "propertyType2" && (
-          <RadioGroup row value={propertyType} onChange={handleRadioChange}>
+          <RadioGroup
+            row
+            value={propertyType}
+            onChange={handleRadioChange}
+            sx={{ margin: 2 }}
+          >
             <FormControlLabel
               value="Apartment"
               control={<Radio />}
@@ -129,11 +211,19 @@ const CustomModal = ({ open, handleClose, onDataUpdate, modalKey }) => {
             />
           </RadioGroup>
         )}
+        <Typography sx={{ color: "red", fontSize: 10 }}>
+          *required fields
+        </Typography>
 
         {activeGroup !== "propertyType" && (
           <>
             <Typography sx={{ mt: 2 }}>Is it for Rent?</Typography>
-            <RadioGroup row value={propertyType2} onChange={handleRadioChange2}>
+            <RadioGroup
+              row
+              value={propertyType2}
+              onChange={handleRadioChange2}
+              sx={{ margin: 2 }}
+            >
               <FormControlLabel
                 value="Available"
                 control={<Radio />}
