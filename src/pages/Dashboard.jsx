@@ -8,10 +8,12 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  CssBaseline,
 } from "@mui/material";
 import CustomModal from "../helper/CustomModal";
 import { AttachMoney, CropDin } from "@mui/icons-material";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 //import { Card, CardContent } from "@mui/material";
 
 // DataList component for listing saved data
@@ -115,6 +117,14 @@ export default function Dashboard() {
   const [filter, setFilter] = useState("");
   console.log(savedData.length, "saved data...");
 
+  const [darkMode, setDarkMode] = useState(false);
+
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? "dark" : "light",
+    },
+  });
+
   useEffect(() => {
     const loadSavedData = () => {
       const keys = Object.keys(localStorage);
@@ -212,147 +222,162 @@ export default function Dashboard() {
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: 2,
-          backgroundColor: "#f5f5f5",
-          borderRadius: 2,
-          boxShadow: 1,
-          margin: "0 2% 0 2%",
-        }}
-      >
-        {[
-          { label: "Total Properties", value: savedData.length },
-          { label: "Total Active Rent", value: activeCount },
-          { label: "Check In", value: checkin },
-          { label: "Check Out", value: checkOut },
-        ].map((item, index) => (
-          <Box
-            key={index}
-            sx={{
-              flex: 1,
-              minWidth: "150px",
-              backgroundColor: "white",
-              borderRadius: 2,
-              boxShadow: 2,
-              padding: 2,
-              margin: "0 8px",
-              textAlign: "center",
-            }}
-          >
-            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              {item.label}
-            </Typography>
-            <Typography variant="h6">{item.value}</Typography>
-            <Box
-              sx={{
-                height: 4,
-                background:
-                  "linear-gradient(to right, #FF5733, #33FF57, #3357FF)",
-                mt: 0.5,
-              }}
-            />
-          </Box>
-        ))}
-      </Box>
-
-      <Grid container spacing={2} sx={{ padding: 2 }}>
-        {/* Empty space to push the right side */}
-
-        <Grid item xs={12} md={8}>
-          <PieChart
-            sx={{
-              "--my-custom-pattern": "url(#Pattern)",
-            }}
-            series={[
-              {
-                data: chartData,
-              },
-            ]}
-            width={800}
-            height={400}
-          >
-            <pattern
-              id="Pattern"
-              patternUnits="userSpaceOnUse"
-              width="20"
-              height="40"
-              patternTransform="scale(0.5)"
-            >
-              <rect x="0" y="0" width="100%" height="100%" fill="pink" />
-              <path
-                d="M0 30h20L10 50zm-10-20h20L0 30zm20 0h20L20 30zM0-10h20L10 10z"
-                strokeWidth="1"
-                stroke="#81b2e4"
-                fill="none"
-              />
-            </pattern>
-          </PieChart>
-        </Grid>
-
-        {/* Right side - box aligned to the far right */}
-        <Grid
-          item
-          xs={12}
-          md={4}
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box
           sx={{
             display: "flex",
             justifyContent: "flex-end",
-            padding: 3,
+            p: 2,
+            marginRight: "2%",
           }}
         >
-          <Box
-            sx={{
-              width: "100%",
-              maxWidth: "400px",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              height: "450px",
-              overflowY: "auto",
-              border: "1px solid #ddd",
-              borderRadius: 3,
-              padding: 3,
-              backgroundColor: "#f9f9f9",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel>Filter by Property Type</InputLabel>
-              <Select
-                value={filter}
-                label="Filter by Property Type"
-                onChange={handleFilterChange}
-              >
-                <MenuItem value="">All</MenuItem>
-                <MenuItem value="Apartment">Apartment</MenuItem>
-                <MenuItem value="House">House</MenuItem>
-                <MenuItem value="Commercial">Commercial</MenuItem>
-              </Select>
-            </FormControl>
-
-            <Button
-              variant="contained"
-              onClick={handleOpen}
+          <Button onClick={() => setDarkMode(!darkMode)} variant="contained">
+            Toggle {darkMode ? "Light" : "Dark"} Mode
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: 2,
+            backgroundColor: "#f5f5f5",
+            borderRadius: 2,
+            boxShadow: 1,
+            margin: "0 2% 0 2%",
+          }}
+        >
+          {[
+            { label: "Total Properties", value: savedData.length },
+            { label: "Total Active Rent", value: activeCount },
+            { label: "Check In", value: checkin },
+            { label: "Check Out", value: checkOut },
+          ].map((item, index) => (
+            <Box
+              key={index}
               sx={{
-                alignSelf: "flex-end",
+                flex: 1,
+                minWidth: "150px",
+                backgroundColor: "white",
+                borderRadius: 2,
+                boxShadow: 2,
+                padding: 2,
+                margin: "0 8px",
+                textAlign: "center",
               }}
             >
-              Add your info.
-            </Button>
+              <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+                {item.label}
+              </Typography>
+              <Typography variant="h6">{item.value}</Typography>
+              <Box
+                sx={{
+                  height: 4,
+                  background:
+                    "linear-gradient(to right, #FF5733, #33FF57, #3357FF)",
+                  mt: 0.5,
+                }}
+              />
+            </Box>
+          ))}
+        </Box>
 
-            <DataList savedData={savedData} filter={filter} />
-          </Box>
+        <Grid container spacing={2} sx={{ padding: 2 }}>
+          {/* Empty space to push the right side */}
 
-          <CustomModal
-            open={open}
-            handleClose={handleClose}
-            onDataUpdate={handleDataUpdate} // Change this line
-            modalKey={modalKey}
-          />
+          <Grid item xs={12} md={8}>
+            <PieChart
+              sx={{
+                "--my-custom-pattern": "url(#Pattern)",
+              }}
+              series={[
+                {
+                  data: chartData,
+                },
+              ]}
+              width={800}
+              height={400}
+            >
+              <pattern
+                id="Pattern"
+                patternUnits="userSpaceOnUse"
+                width="20"
+                height="40"
+                patternTransform="scale(0.5)"
+              >
+                <rect x="0" y="0" width="100%" height="100%" fill="pink" />
+                <path
+                  d="M0 30h20L10 50zm-10-20h20L0 30zm20 0h20L20 30zM0-10h20L10 10z"
+                  strokeWidth="1"
+                  stroke="#81b2e4"
+                  fill="none"
+                />
+              </pattern>
+            </PieChart>
+          </Grid>
+
+          {/* Right side - box aligned to the far right */}
+          <Grid
+            item
+            xs={12}
+            md={4}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: 3,
+            }}
+          >
+            <Box
+              sx={{
+                width: "100%",
+                maxWidth: "400px",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                height: "450px",
+                overflowY: "auto",
+                border: "1px solid #ddd",
+                borderRadius: 3,
+                padding: 3,
+                backgroundColor: "#f9f9f9",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel>Filter by Property Type</InputLabel>
+                <Select
+                  value={filter}
+                  label="Filter by Property Type"
+                  onChange={handleFilterChange}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="Apartment">Apartment</MenuItem>
+                  <MenuItem value="House">House</MenuItem>
+                  <MenuItem value="Commercial">Commercial</MenuItem>
+                </Select>
+              </FormControl>
+
+              <Button
+                variant="contained"
+                onClick={handleOpen}
+                sx={{
+                  alignSelf: "flex-end",
+                }}
+              >
+                Add your info.
+              </Button>
+
+              <DataList savedData={savedData} filter={filter} />
+            </Box>
+
+            <CustomModal
+              open={open}
+              handleClose={handleClose}
+              onDataUpdate={handleDataUpdate} // Change this line
+              modalKey={modalKey}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      </ThemeProvider>
     </>
   );
 }
