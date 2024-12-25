@@ -62,11 +62,7 @@ const CustomModal = ({ open, handleClose, onDataUpdate, modalKey }) => {
       checkInDate,
       checkOutDate,
     };
-    if (
-      (modalKey && LocationData.trim() === "") ||
-      ContactData.trim() === "" ||
-      propertyType.trim() === ""
-    ) {
+    if ((modalKey && LocationData.trim() === "") || ContactData.trim() === "") {
       alert("Fill up required fields");
       return;
     }
@@ -116,9 +112,7 @@ const CustomModal = ({ open, handleClose, onDataUpdate, modalKey }) => {
         }}
       >
         <Typography variant="h6">Add your details</Typography>
-        <Typography sx={{ mt: 2 }}>
-          This is a sample modal using Material UI.
-        </Typography>
+        
 
         <TextField
           label="Enter Data"
@@ -211,9 +205,6 @@ const CustomModal = ({ open, handleClose, onDataUpdate, modalKey }) => {
             />
           </RadioGroup>
         )}
-        <Typography sx={{ color: "red", fontSize: 10 }}>
-          *required fields
-        </Typography>
 
         {activeGroup !== "propertyType" && (
           <>

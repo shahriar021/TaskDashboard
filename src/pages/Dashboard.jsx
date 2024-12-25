@@ -29,6 +29,8 @@ const DataList = ({ savedData, filter }) => {
             contactData,
             propertyType,
             propertyType2,
+            checkInDate,
+            checkOutDate,
           } = value;
           const name = inputData || "N/A";
 
@@ -88,6 +90,16 @@ const DataList = ({ savedData, filter }) => {
                     <strong>Contact:</strong> {contactData || "N/A"}
                   </Typography>
                 </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">
+                    <strong>checkInDate:</strong> {checkInDate || "N/A"}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">
+                    <strong>checkOutDate:</strong> {checkOutDate || "N/A"}
+                  </Typography>
+                </Grid>
               </Grid>
             </Box>
           );
@@ -134,6 +146,8 @@ export default function Dashboard() {
     contactData,
     propertyType,
     propertyType2,
+    checkInDate,
+    checkOutDate,
     key
   ) => {
     const updatedData = {
@@ -144,6 +158,8 @@ export default function Dashboard() {
       contactData,
       propertyType,
       propertyType2,
+      checkInDate,
+      checkOutDate,
     };
     localStorage.setItem(key, JSON.stringify(updatedData));
     setSavedData((prevData) => {
@@ -186,6 +202,14 @@ export default function Dashboard() {
     return value.propertyType2 === "Available" ? count + 1 : count;
   }, 0);
 
+  const checkin = savedData.reduce((count, { value }) => {
+    return value.checkInDate !== null ? count + 1 : count;
+  }, 0);
+
+  const checkOut = savedData.reduce((count, { value }) => {
+    return value.checkOutDate !== null ? count + 1 : count;
+  }, 0);
+
   return (
     <>
       <Box
@@ -202,8 +226,8 @@ export default function Dashboard() {
         {[
           { label: "Total Properties", value: savedData.length },
           { label: "Total Active Rent", value: activeCount },
-          { label: "Check In", value: activeCount },
-          { label: "Check Out", value: activeCount },
+          { label: "Check In", value: checkin },
+          { label: "Check Out", value: checkOut },
         ].map((item, index) => (
           <Box
             key={index}
